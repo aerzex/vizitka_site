@@ -47,7 +47,72 @@
                               </div>
                         </div>
                     </div>
+
                 </div>
             </div>
-
+            <div class="container">
+                <div class = "row">
+                    <div class="button col-12">
+                        <button id="mabatton">Нажми</button>
+                        <p id="demo"></p>
+                    </div>
+                </div>
+            </div>
+            <script type="text/javascript" src="src/js/button.js"></script>
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <h1 class="pixelify-sans">Привет, <?php echo $_COOKIE['User']; ?></h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <form method="POST" action="profile.php" enctype="multipart/form-data" name="upload">
+                            <div class="row post reg">
+                                <input class="form-control" type="text" name="title" placeholder="Title">
+                            </div>
+                            <div class="row post reg">
+                                <input class="form-control" type="text" name="text" placeholder="Text">
+                            </div>
+                            <div class="row post reg">
+                                <input type="file" name="file" /><br>
+                            </div>
+                            <button type="submit" id="mabatton" name="submit" value="upload">Добавить пост</button>
+                        </form>
+                    </div>
+                </div>
     </html>
+
+    <?php
+    require_once('bd.php');
+
+    $link = mysqli_connect('127.0.0.1', 'root', '123456', 'bd_name');
+
+    if (isset($_POST['submit'])) {
+
+        $title = $_POST['title'];
+        $main_text = $_POST['text'];
+
+        if (!$title || !$main_text) die ('Пожалуйста введите все значения!');
+
+        $sql = "INSERT INTO posts (title, main_text) VALUES ('$title', '$main_text')";
+
+        if(!mysqli_query($link, $sql)) die ('Не удалось добавить пост');
+
+        if(!empty($_FILES["file"]))
+    {
+        if (((@$_FILES["file"]["type"] == "image/gif") || (@$_FILES["file"]["type"] == "image/jpeg")
+        || (@$_FILES["file"]["type"] == "image/jpg") || (@$_FILES["file"]["type"] == "image/pjpeg")
+        || (@$_FILES["file"]["type"] == "image/x-png") || (@$_FILES["file"]["type"] == "image/png"))
+        && (@$_FILES["file"]["size"] < 102400))
+        {
+            move_uploaded_file($_FILES["file"]["tmp_name"], "src/upload/" . $_FILES["file"]["name"]);
+            echo "Load in:  " . "src/upload/" . $_FILES["file"]["name"];
+        }
+        else
+        {
+            echo "upload failed!";
+        }
+    }
+    }
+    ?>
